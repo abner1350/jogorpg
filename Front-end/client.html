@@ -1,0 +1,59 @@
+<html>
+    <head>
+        
+        <meta charset="utf-8">        
+        
+        <title>Jogo Rpg</title>
+    
+    </head>
+    <style>
+        #screen{
+            border: 1px solid #CCC ;
+        } 
+    </style>
+
+    <body>
+        
+        <canvas id="screen" width="5" height="5"></canvas>
+        
+        <script>
+            const screen = document.getElementById('screen')
+            const context = screen.getContext('2d')
+
+            const game = {
+                Mapa:  [[None,None,None,None,None,None,None,None,None,None],
+                        [None,0,0,0,0,0,0,0,0,None],
+                        [None,0,0,0,0,0,0,0,0,None],
+                        [None,0,0,0,0,0,0,0,0,None],
+                        [None,0,0,0,0,0,0,0,0,None],
+                        [None,0,0,0,0,0,0,0,0,None],
+                        [None,0,0,0,0,0,0,0,0,None],
+                        [None,0,0,0,0,0,0,0,0,None],
+                        [None,0,0,0,0,0,0,0,0,None],
+                        [None,None,None,None,None,None,None,None,None,None]],
+                    
+                personagem: {x: 1, y:1}
+            }
+
+            //renderScreen()
+            console.log(game.Mapa.length);
+
+
+            function renderScreen(){
+                for (linhasmapa in game.Mapa.length){
+                    for (linhasmapa in game.Mapa.width) {
+
+                    }
+                }
+
+            }
+
+            context.fillStyle = color
+            context.fillRect(positionX,positionX,width,height,color)
+
+
+        </script>
+
+    </body>
+
+</html>
