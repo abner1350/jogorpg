@@ -8,50 +8,196 @@
     </head>
     <style>
         #screen{
-            border: 1px solid #CCC ;
+            border: 10px solid #ccc ;
+            image-rendering:pixelated;
+            image-rendering:crisp-edges;
+            image-rendering:-moz-crisp-edges;
+            width: 400px;
+            height: 400px;
         } 
     </style>
 
     <body>
-        
         <canvas id="screen" width="5" height="5"></canvas>
-        
         <script>
             const screen = document.getElementById('screen')
             const context = screen.getContext('2d')
+            const currentPlayerId = 'player'
 
             const game = {
-                Mapa:  [[None,None,None,None,None,None,None,None,None,None],
-                        [None,0,0,0,0,0,0,0,0,None],
-                        [None,0,0,0,0,0,0,0,0,None],
-                        [None,0,0,0,0,0,0,0,0,None],
-                        [None,0,0,0,0,0,0,0,0,None],
-                        [None,0,0,0,0,0,0,0,0,None],
-                        [None,0,0,0,0,0,0,0,0,None],
-                        [None,0,0,0,0,0,0,0,0,None],
-                        [None,0,0,0,0,0,0,0,0,None],
-                        [None,None,None,None,None,None,None,None,None,None]],
-                    
-                personagem: {x: 1, y:1}
+                Mapa:{
+                    'principal':
+                            [[0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,1,0,0,0,0,0],
+                             [0,0,0,0,1,0,0,0,0,0],
+                             [0,0,0,0,1,0,0,0,0,0],
+                             [0,0,0,0,1,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0,0,0]]
+                },
+
+                Tela:{
+                    'player':{x :0, y:0}
+                }
             }
 
-            //renderScreen()
-            console.log(game.Mapa.length);
-
-
+            renderScreen()
+            
             function renderScreen(){
-                for (linhasmapa in game.Mapa.length){
-                    for (linhasmapa in game.Mapa.width) {
+                context.fillStyle= 'white'
+                context.clearRect(0,0,5,5)
+                var xtela = 0
+                for (var mapax = game.Tela['player']["x"]-2; mapax <= game.Tela['player']["x"]+2; mapax++){
+                    var ytela=0
+                    for (var mapay = game.Tela['player']["y"]-2; mapay <= game.Tela['player']["y"]+2; mapay++) {
+                        if(xtela === 2 && ytela === 2){
 
+                            context.fillStyle = corobjeto("persona")
+                            
+                            context.fillRect(xtela,ytela,1,1)
+                            
+                            ytela++
+                            
+                            continue
+                        }
+
+                        if (mapax >= game.Mapa['principal'][0]["length"] || 
+                            mapay >= game.Mapa['principal']["length"] ||
+                            mapay < 0 || mapax <0) {
+                            var mar= -1
+                            context.fillStyle = corobjeto(mar)
+                            context.fillRect(xtela,ytela,1,1)
+                            ytela++
+                            continue
+                        }
+                        
+                        context.fillStyle = corobjeto(game.Mapa['principal'][mapay][mapax])
+                        context.fillRect(xtela,ytela,1,1)
+                        ytela++
                     }
+                    xtela++
+                }
+                requestAnimationFrame(renderScreen)
+            }
+
+            function corobjeto(codigoobjeto) {
+                if(codigoobjeto == -1){
+                    return 'blue';
+                }
+                if(codigoobjeto === 0){
+                    return 'green';
+                }
+                if(codigoobjeto === "persona" ){
+                    return 'black';
+                }
+                
+                if(codigoobjeto === 1){
+                    return 'brown'
+                }
+            }
+            
+            document.addEventListener('keydown',handlekeydown)
+
+            function handlekeydown(event){
+                const keypressed = event.key
+                const player = game.Tela[currentPlayerId]
+                console.log(keypressed)
+
+                    switch(keypressed){
+                    case "ArrowUp":
+                        if(CanMove(keypressed)){
+                            player["y"]-=1
+                        }
+                        else{
+                        console.log("Não pode se mover")
+                        }
+                            
+                    break;
+
+                    case "ArrowDown":
+                        if(CanMove(keypressed)){
+                            player["y"]+= 1
+                        }
+                        else{
+                        console.log("Não pode se mover")
+                        }
+                    break;
+
+                    case "ArrowRight":
+                        if(CanMove(keypressed)){
+                            player["x"]+= 1
+                        }
+                        else{
+                        console.log("Não pode se mover")
+                        }
+                    break;
+                    
+                    case "ArrowLeft":
+                        if(CanMove(keypressed)){
+                            player["x"]-= 1
+                        }
+                        else{
+                        console.log("Não pode se mover")
+                        }
+                    break;
                 }
 
+
             }
+            
+            function CanMove(eventkey){
 
-            context.fillStyle = color
-            context.fillRect(positionX,positionX,width,height,color)
+                const player_verify = game.Tela[currentPlayerId]
+                
+                switch(eventkey){
+                    case "ArrowUp":
+                        if( player_verify['y']-1 >= 0 &&
+                            game.Mapa["principal"][player_verify['y']-1][player_verify['x']] === 0){
+                            return true
+                        }
+                        else {
+                           return false
+                        }
 
 
+                    break;
+
+                    case "ArrowDown":
+                        if( player_verify['y']+1 < game.Mapa['principal']["length"] &&
+                            game.Mapa["principal"][player_verify['y']+1][player_verify['x']] === 0){
+                            
+                            return true
+                        }
+                        else {
+                            return false
+                        }
+                    
+                    break;
+
+                    case "ArrowRight":
+                        if( player_verify['x']+1 < game.Mapa['principal'][0]["length"] &&
+                            game.Mapa["principal"][player_verify['y']][player_verify['x']+1] === 0){
+                            return true
+                        }
+                        else {
+                            return false
+                        }
+                    break;
+                    
+                    case "ArrowLeft":
+                        if( player_verify['x']-1 >= 0 &&
+                            game.Mapa["principal"][player_verify['y']][player_verify['x']-1] === 0){
+                            return true
+                        }
+                        else {
+                            return false
+                        }  
+                    break;
+                }
+            }
         </script>
 
     </body>
